@@ -1,4 +1,6 @@
-const TodoStats = ({ todos }) => {
+import { memo } from 'react';
+
+const TodoStats = memo(({ todos }) => {
     const calculateStats = () => {
         const total = todos.length;
         const completed = todos.filter((todo) => todo.completed).length;
@@ -21,6 +23,6 @@ const TodoStats = ({ todos }) => {
             </div>
         </div>
     );
-};
+});
 
 export default TodoStats;

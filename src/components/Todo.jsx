@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import TodoForm from './TodoForm';
 import TodoList from './TodoList';
 import TodoFilter from './TodoFilter';
@@ -10,7 +10,7 @@ const Todo = () => {
 
     const generateId = () => Math.floor(Math.random() * 10000);
 
-    const handleAdd = (text) => {
+    const handleAdd = useCallback((text) => {
         const newTodo = {
             id: generateId(),
             text,
@@ -18,27 +18,29 @@ const Todo = () => {
             createdAt: new Date(),
         };
 
-        setTodos([...todos, newTodo]);
-    };
+        setTodos((prev) => [...prev, newTodo]);
+    }, []);
 
-    const handleToggle = (id) => {
-        setTodos(todos.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
-    };
+    const handleToggle = useCallback((id) => {
+        setTodos((prev) => prev.map((todo) => (todo.id === id ? { ...todo, completed: !todo.completed } : todo)));
+    }, []);
 
-    const handleDelete = (id) => {
-        setTodos(todos.filter((todo) => todo.id !== id));
-    };
+    const handleDelete = useCallback((id) => {
+        setTodos((prev) => prev.filter((todo) => todo.id !== id));
+    }, []);
 
-    const handleEdit = (id, newText) => {
-        setTodos(todos.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo)));
-    };
+    const handleEdit = useCallback((id, newText) => {
+        setTodos((prev) => prev.map((todo) => (todo.id === id ? { ...todo, text: newText } : todo)));
+    }, []);
 
-    const handleFilterChange = (newFilter) => {
+    const handleFilterChange = useCallback((newFilter) => {
         setFilter(newFilter);
-    };
+    }, []);
 
-    const getFilteredTodos = () => {
-        switch (filter) {
+    const getFilteredTodos = useCallback(() => {
+        switch (
+            filter // filter 값에 따라 완료 미완료 목록 반환
+        ) {
             case 'active':
                 return todos.filter((todo) => !todo.completed);
             case 'completed':
@@ -46,7 +48,7 @@ const Todo = () => {
             default:
                 return todos;
         }
-    };
+    }, [filter, todos]);
 
     const filteredTodos = getFilteredTodos();
 
